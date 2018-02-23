@@ -17,9 +17,9 @@ appendLegend();
 
 // 1. Canvas Size for our SVG
 function setupCanvasSize() {
-    margin = {top: 20, left: 80, bottom: 20, right: 30};
+    margin = {top: 20, left: 80, bottom: 20, right: 100};
     width = 960 - margin.left - margin.right;
-    height = 350 - margin.top - margin.bottom;
+    height = 500 - margin.top - margin.bottom;
 }
 
 // 2. Adding SVG to the body using the attributes created in the previous step
@@ -34,25 +34,25 @@ function appendSvg(domElement) {
 // 3. Set scale for X axis (checking the max value for the sales property in totalSales array)
 function setupXScale()
 {
-    var maxSales = d3.max(totalSales, function(d, i) {
-        return d.sales;
-    });
-
-    // We are using continuos values for the X axis (number of sales)
-    x = d3.scaleLinear()
-            .range([0, width])
-            .domain([0, maxSales]);
+    // We are using discrete values for the Y axis (products)
+    x = d3.scaleBand()
+            .rangeRound([0, width])
+            .domain(totalSales.map(function(d, i) {
+                return d.product;
+            }));
 }
 
 //4. Set scale for Y axis (getting every product in totalSales array)
 function setupYScale()
 {
-    // We are using discrete values for the Y axis (products)
-    y = d3.scaleBand()
-            .rangeRound([0, height])
-            .domain(totalSales.map(function(d, i) {
-                return d.product;
-            }));
+    var maxSales = d3.max(totalSales, function(d, i) {
+        return d.sales;
+    });
+
+    // We are using continuos values for the X axis (number of sales)
+    y = d3.scaleLinear()
+            .range([height, 0])
+            .domain([0, maxSales]);
 }
 
 //5. Add the X axis to the SVG
@@ -80,16 +80,16 @@ function appendChartBars()
     // Set X and Y positions and also set height (using y scale) and withd (using x scale)
     newRects.append('rect')
         .attr('x', function(d, i) {
-            return x(0) + 1.5;
+            return x(d.product) + 5;
         })
         .attr('y', function(d, i) {
-            return y(d.product) + 5;
-        })
-        .attr('height', function(d, i) {
-            return y.bandwidth() - 10;
+            return y(d.sales) + 0.5;
         })
         .attr('width', function(d, i) {
-            return x(d.sales) - 1.5;
+            return x.bandwidth() - 10;
+        })
+        .attr('height', function(d, i) {
+            return height - y(d.sales) - 0.5;
         })
         // Getting bar color from color parameter in totalSales
         .attr('fill', function(d, i) {
