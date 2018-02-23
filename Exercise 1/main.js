@@ -13,6 +13,7 @@ setupYScale();
 appendXAxis();
 appendYAxis();
 appendChartBars();
+appendLegend();
 
 // 1. Canvas Size for our SVG
 function setupCanvasSize() {
@@ -78,12 +79,71 @@ function appendChartBars()
 
     // Set X and Y positions and also set height (using y scale) and withd (using x scale)
     newRects.append('rect')
-      .attr('x', x(0))
-      .attr('y', function(d, i) {
-        return y(d.product);
-      })
-      .attr('height', y.bandwidth)
-      .attr('width', function(d, i) {
-        return x(d.sales);
-      });
+        .attr('x', function(d, i) {
+            return x(0) + 1.5;
+        })
+        .attr('y', function(d, i) {
+            return y(d.product) + 5;
+        })
+        .attr('height', function(d, i) {
+            return y.bandwidth() - 10;
+        })
+        .attr('width', function(d, i) {
+            return x(d.sales) - 1.5;
+        })
+        // Getting bar color from color parameter in totalSales
+        .attr('fill', function(d, i) {
+            return d.color;
+        })
+        // Adding Stroke to the rect
+        .attr('stroke', '#000')
+        .attr('stroke-width', '1.5')
+        .attr('stroke-opacity', '1.1')
+        // Adding hover
+        .on("mouseover", function(d){
+            d3.select(this).style("fill", function() {
+                return d3.rgb(d3.select(this).style("fill")).darker(0.7);
+            });
+        })
+        .on("mouseout", function(d){
+            d3.select(this).style("fill", function() {
+                return d3.rgb(d3.select(this).style("fill")).brighter(0.7);
+            });
+        });
+}
+
+//8. Add legend to the chart
+function appendLegend()
+{   
+    var g = svg.append("g").attr("transform", "translate(" + 800 + "," + 10 + ")");
+
+    ylegend = d3.scaleBand()
+            .rangeRound([0, 100])
+            .domain(totalSales.map(function(d, i) {
+                return d.product;
+            }));
+
+    var legend = g.append("g")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", 12)
+                .attr("text-anchor", "end")
+                .selectAll("g")
+                .data(totalSales)
+                .enter().append("g")
+                .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+    legend.append("rect")
+                .attr("width", 20)
+                .attr('height', function(d, i) {
+                    return ylegend.bandwidth() - 2;
+                })
+                .attr('fill', function(d, i) {
+                    return d.color;
+                });
+
+    legend.append("text")
+                .attr("x", 67)
+                .attr("y", 10)
+                .attr("dy", ".35em")
+                .text(function(d) { return d.product; });
 }
