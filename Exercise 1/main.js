@@ -118,7 +118,7 @@ function appendLegend()
     var g = svg.append("g").attr("transform", "translate(" + 800 + "," + 10 + ")");
 
     ylegend = d3.scaleBand()
-            .rangeRound([0, 100])
+            .rangeRound([0, 110])
             .domain(totalSales.map(function(d, i) {
                 return d.product;
             }));
@@ -135,15 +135,17 @@ function appendLegend()
     legend.append("rect")
                 .attr("width", 20)
                 .attr('height', function(d, i) {
-                    return ylegend.bandwidth() - 2;
+                    return ylegend.bandwidth() - 5;
                 })
                 .attr('fill', function(d, i) {
                     return d.color;
-                });
+                })
+                .attr('stroke', '#000')
+                .attr('stroke-width', '1.5');
 
     legend.append("text")
                 .attr("x", 67)
-                .attr("y", 10)
+                .attr("y", 9)
                 .attr("dy", ".35em")
                 .text(function(d) { return d.product; });
 }
