@@ -33,7 +33,7 @@ function addLegendElements(legend) {
 
 function addLegendText(legend) {
     legend.append("text")
-            .attr("x", 67)
+            .attr("x", 70)
             .attr("y", 9)
             .attr("dy", ".35em")
             .text(function(d) { return d.product; });

@@ -20,8 +20,8 @@ appendLegend();
 
 // Canvas Size for our SVG
 function setupCanvasSize() {
-    margin = {top: 20, left: 40, bottom: 20, right: 140};
-    width = 960 - margin.left - margin.right;
+    margin = {top: 20, left: 40, bottom: 20, right: 130};
+    width = 970 - margin.left - margin.right;
     height = 400 - margin.top - margin.bottom;
 }
 
@@ -30,6 +30,7 @@ function appendSvg(domElement) {
     svg = d3.select(domElement).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
+            .attr("style", "background-color: #EAF0FA;")
             .append("g")
             .attr("transform",`translate(${margin.left}, ${margin.top})`);
 }
@@ -91,7 +92,19 @@ function appendChartBars()
 //Add legend to the chart
 function appendLegend()
 {   
-    var g = svg.append("g").attr("transform", "translate(" + 800 + "," + 10 + ")");
+    var legendRect = svg.append("rect")
+                .attr('x', width + 10)
+                .attr('width', 100)
+                .attr('y', 5)    
+                .attr('height', 150)
+                .attr("fill", "blue")
+                .attr('fill-opacity', 0.2)
+                .attr('stroke', '#000')
+                .attr('stroke-width', '1.5')
+                .attr('stroke-opacity', '1.1');
+
+    var g = svg.append("g")
+                .attr("transform", "translate(" + (width + 20) + "," + (margin.top) + ")");
 
     setupLegendYScale();
     var legend = createLegend(g);
