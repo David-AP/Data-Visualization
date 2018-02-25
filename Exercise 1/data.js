@@ -3,5 +3,6 @@ var totalSales = [
     { product: 'Jacket', sales: 6, color: "#F7D358" },
     { product: 'Snuggie', sales: 9, color: "#848484" },
     { product: 'Gloves', sales: 3, color: "#A9BCF5" },
-    { product: 'Scarf', sales: 13, color: "#F5A9F2" }
+    { product: 'Scarf', sales: 13, color: "#F5A9F2" },
+    { product: 'Coat', sales: 5, color: "#FAFA17" }
     ];
