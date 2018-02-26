@@ -34,15 +34,14 @@ function addColor(bars) {
 }
 
 function addStroke(bars) {
-    bars.attr('stroke', '#000')
-        .attr('stroke-width', '1.5')
-        .attr('stroke-opacity', '1.1');
+    bars.attr('class', 'myStroke');
 }
 
 function addMouseEvents(bars) {
     bars.on("mouseover", showHover)
         .on("mousemove", showTooltip)
         .on("mouseout", hideHoverAndTooltip);
+
 }
 
 function showHover(d) {

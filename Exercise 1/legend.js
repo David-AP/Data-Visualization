@@ -25,16 +25,14 @@ function addLegendElements(legend) {
             .attr('fill', function(d, i) {
                 return d.color;
             })
-            .attr('stroke', '#000')
-            .attr('stroke-width', '1.5')
-            .attr('stroke-opacity', '1.1');
+            .attr('class', 'myStroke');
             
 }
 
 function addLegendText(legend) {
     legend.append("text")
             .attr("x", 70)
-            .attr("y", 9)
+            .attr("y", 8)
             .attr("dy", ".35em")
             .text(function(d) { return d.product; });
 }

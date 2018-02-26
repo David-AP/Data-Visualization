@@ -92,19 +92,21 @@ function appendChartBars()
 //Add legend to the chart
 function appendLegend()
 {   
+    svg.append("text")
+        .attr("x", width + 35)
+        .attr("y", 0)
+        .attr("class", "legendTitle")
+        .text("Legend");
+
     var legendRect = svg.append("rect")
                 .attr('x', width + 10)
-                .attr('width', 100)
-                .attr('y', 5)    
-                .attr('height', 150)
-                .attr("fill", "blue")
-                .attr('fill-opacity', 0.2)
-                .attr('stroke', '#000')
-                .attr('stroke-width', '1.5')
-                .attr('stroke-opacity', '1.1');
+                .attr('width', 95)
+                .attr('y', 10)    
+                .attr('height', 145)
+                .attr('class', "legendRect myStroke");
 
     var g = svg.append("g")
-                .attr("transform", "translate(" + (width + 20) + "," + (margin.top) + ")");
+                .attr("transform", "translate(" + (width + 20) + "," + (margin.top + 6) + ")");
 
     setupLegendYScale();
     var legend = createLegend(g);
