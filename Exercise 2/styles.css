@@ -1,0 +1,28 @@
+.svgStyle {
+  background-color: #EAF0FA;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.lineHover {
+  fill: none;
+  stroke: #87FC02;
+  stroke-width: 4px;
+}
+
+.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 50px;
+  height: auto;
+  background: none repeat scroll 0 0 #DEFC94;
+  border: 2px solid #000000;
+  padding: 10px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  border-radius: 7px;
+}
