@@ -1,3 +1,7 @@
+.svgStyle {
+    background-color: #EAF0FA;
+}
+
 .toolTip {
     position: absolute;
     display: none;
@@ -29,7 +33,7 @@
     fill-opacity: 0.2;
 }
 
-.myStroke {
+.chartStroke {
     stroke: #000;
     stroke-width: 1.5;
     stroke-opacity: 1.1;

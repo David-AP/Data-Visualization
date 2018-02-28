@@ -1,9 +1,12 @@
+let tooltip = null;
+
 // Setup tooltip showed on the bars
 function setupToolTip()
 {
     tooltip = d3.select("body").append("div").attr("class", "toolTip");
 }
 
+// Adding bars to the chart
 function addRect(bars) {
     bars.attr('x', setBarStartPositionX)
         .attr('width', setBarEndPositionX)
@@ -27,16 +30,19 @@ function setBarEndPositionY(d, i) {
     return height - y(d.sales) - 0.5;
 }
 
+// Adding color to each bar
 function addColor(bars) {
     bars.attr('fill', function(d, i) {
         return d.color;
     })
 }
 
+// Adding Stroke to each bar
 function addStroke(bars) {
-    bars.attr('class', 'myStroke');
+    bars.attr('class', 'chartStroke');
 }
 
+// Adding Mouse Events
 function addMouseEvents(bars) {
     bars.on("mouseover", showHover)
         .on("mousemove", showTooltip)
@@ -46,13 +52,13 @@ function addMouseEvents(bars) {
 
 function showHover(d) {
     d3.select(this).style("fill", function() {
-        return d3.rgb(d3.select(this).style("fill")).darker(0.7);
+        return d3.rgb(d3.select(this).style("fill")).darker(HOVER_INTENSITY);
     });
 }
 
 function hideHoverAndTooltip(d) {
     d3.select(this).style("fill", function() {
-        return d3.rgb(d3.select(this).style("fill")).brighter(0.7);
+        return d3.rgb(d3.select(this).style("fill")).brighter(HOVER_INTENSITY);
     });
     hideTooltip();
 }

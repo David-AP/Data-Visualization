@@ -4,9 +4,6 @@ let margin = null,
 
 let svg = null;
 let x, y = null;
-let tooltip = null;
-
-let ylegend = null;
 
 // Main Process
 setupCanvasSize();
@@ -20,9 +17,9 @@ appendLegend();
 
 // Canvas Size for our SVG
 function setupCanvasSize() {
-    margin = {top: 20, left: 40, bottom: 20, right: 130};
-    width = 970 - margin.left - margin.right;
-    height = 400 - margin.top - margin.bottom;
+    margin = {top: MARGIN_TOP, left: MARGIN_LEFT, bottom: MARGIN_BOTTOM, right: MARGIN_RIGHT};
+    width = SVG_WIDTH - margin.left - margin.right;
+    height = SVG_HEIGHT - margin.top - margin.bottom;
 }
 
 // Adding SVG to the body using the attributes created in the previous step
@@ -30,7 +27,7 @@ function appendSvg(domElement) {
     svg = d3.select(domElement).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-            .attr("style", "background-color: #EAF0FA;")
+            .attr("class", "svgStyle")
             .append("g")
             .attr("transform",`translate(${margin.left}, ${margin.top})`);
 }
@@ -92,24 +89,11 @@ function appendChartBars()
 //Add legend to the chart
 function appendLegend()
 {   
-    svg.append("text")
-        .attr("x", width + 35)
-        .attr("y", 0)
-        .attr("class", "legendTitle")
-        .text("Legend");
-
-    var legendRect = svg.append("rect")
-                .attr('x', width + 10)
-                .attr('width', 95)
-                .attr('y', 10)    
-                .attr('height', 145)
-                .attr('class', "legendRect myStroke");
-
-    var g = svg.append("g")
-                .attr("transform", "translate(" + (width + 20) + "," + (margin.top + 6) + ")");
-
-    setupLegendYScale();
-    var legend = createLegend(g);
+    setupCanvasLegend();
+    
+    setupLegendScale();
+    
+    var legend = createLegend(svg);
     addLegendElements(legend);
     addLegendText(legend);
 }
