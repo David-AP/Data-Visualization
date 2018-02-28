@@ -14,6 +14,14 @@
   stroke-width: 4px;
 }
 
+.dot {
+  fill: steelblue;
+}
+
+.dotHover {
+  fill: #87FC02;
+}
+
 .toolTip {
   position: absolute;
   display: none;
