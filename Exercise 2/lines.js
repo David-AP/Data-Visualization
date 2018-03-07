@@ -13,18 +13,15 @@ function createPaths(svg) {
                         .x(function(d) { return x(d.month); })
                         .y(function(d) { return y(d.sales); });
 
-    // Add the valueline path.
-    var lines = svg.append("path")
-        .data([totalSales])
-        .attr("class", "line")
-        .attr("d", valueline);
+    var lines = svg.selectAll(".line")
+                .data(dataList)
+                .enter().append("g");
 
-    addLineMouseEvents(lines);
-}
-
-function addLineMouseEvents(lines) {
-    lines.on("mouseover", showLineHover)
-         .on("mouseout", hideHoverLine);
+    lines.append("path")
+                .attr("class", "line")
+                .attr("d", valueline)
+                .on("mouseover", showLineHover)
+                .on("mouseout", hideHoverLine);
 }
 
 function showLineHover(d) {
@@ -38,14 +35,14 @@ function showLineHover(d) {
   }
 
 // Adding dots to the lines
-function createDots(svg) {
-   var dots =  svg.selectAll("circle")
-        .data(totalSales)
-        .enter().append("circle")        
+function createDots(svg) {  
+    var dots =  svg.selectAll("circle")
+        .data(pointList)
+        .enter().append("circle")
+        .attr("class", "dot")      
         .attr("cx", function(d) { return x(d.month); })
         .attr("cy", function(d) { return y(d.sales); })
-        .attr("r", DOT_RADIOUS)
-        .attr("class", "dot");
+        .attr("r", DOT_RADIOUS);
         
     addDotMouseEvents(dots);    
 }

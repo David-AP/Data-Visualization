@@ -46,10 +46,12 @@ function setupXScale()
 //Set scale for Y axis (checking the max value for the sales property in totalSales array)
 function setupYScale()
 {
-  var maxSales = d3.max(totalSales, function(d, i) {
-    return d.sales;
+  var maxSales = d3.max(dataList, function(d, i) {
+    return d3.max(d, function(d, i) {
+      return d.sales;
+    }); 
   });
-
+  
   // We are using continuos values for the Y axis (number of sales)
   y = d3.scaleLinear()
         .range([height, 0])
