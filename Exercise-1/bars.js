@@ -47,7 +47,6 @@ function addMouseEvents(bars) {
     bars.on("mouseover", showHover)
         .on("mousemove", showTooltip)
         .on("mouseout", hideHoverAndTooltip);
-
 }
 
 function showHover(d) {
