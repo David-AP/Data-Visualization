@@ -91,8 +91,7 @@ function appendChartBars()
 //Add legend to the chart
 function appendLegend()
 {   
-    setupCanvasLegend();
-    
+    setupCanvasLegend();    
     setupLegendScale();
     
     var legend = createLegend(svg);

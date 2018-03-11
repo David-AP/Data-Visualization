@@ -51,7 +51,7 @@ function createLegendRectangule(svg) {
                 .attr('x', startPositionX)
                 .attr('width', LEGEND_WIDTH)
                 .attr('y', startPositionY)    
-                .attr('height', LEGEND_CONTENT_HEIGHT + LEGEND_MARGIN_TOP + MARGIN_TOP + LEGEND_ELEMENT_SEPARATION)
+                .attr('height', totalSales.length * LEGEND_ELEMENT_HEIGHT + LEGEND_MARGIN_TOP)
                 .attr('class', "legendRect chartStroke");
 }
 
