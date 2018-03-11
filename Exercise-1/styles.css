@@ -1,0 +1,40 @@
+.svgStyle {
+    background-color: #EAF0FA;
+}
+
+.toolTip {
+    position: absolute;
+    display: none;
+    min-width: 50px;
+    height: auto;
+    background: none repeat scroll 0 0 #FAE9AF;
+    border: 2px solid #000000;
+    padding: 10px;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 7px;
+  }
+
+.legend {
+    font-family: "sans-serif";
+    font-size: 13px;
+    text-anchor: end;
+  }
+
+.legendTitle {
+    font-family: "sans-serif";
+    font-size: 15px;
+    stroke: #6F98FB;
+    stroke-width: 1;
+  }
+
+.legendRect {
+    fill: blue;
+    fill-opacity: 0.2;
+}
+
+.chartStroke {
+    stroke: #000;
+    stroke-width: 1.5;
+    stroke-opacity: 1.1;
+}
