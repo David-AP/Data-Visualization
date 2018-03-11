@@ -311,7 +311,6 @@ function setBarEndPositionX(d, i) {
     return x.bandwidth() - 10;
 }
 ```
-Tooltip example:
 ![No padding](../pictures/exercise1-barrassincentrar.png "Chart Axis")
 
 for this reasen we add some pixels (in this case 5) to the **x** position (this position is defined by the product that is refered in the specific bar).
@@ -320,7 +319,6 @@ function setBarStartPositionX(d, i) {
     return x(d.product) + 5;
 }
 ```
-Tooltip example:
 ![No padding](../pictures/exercise1-full.png "Chart Axis")
 
 For the **y** and **height** parameters we do something similar (add and substract 0.5 in order to separete a little the bar for the X axis and don't exceed the height). The heihgt is defined by the value in the sales property (_YScale_)
@@ -334,3 +332,196 @@ function setBarEndPositionY(d, i) {
 }
 ```
 
+**3.- addColor()**
+This function give color to each bar.We have to remember that we set to the rect data our variable with the json information `svg.selectAll('rect').data(totalSales)`, so now, we only need to access to the color attribute and use it to fill the rect that represent the bar.
+```
+function addColor(bars) {
+    bars.attr('fill', function(d, i) {
+        return d.color;
+    })
+}
+```
+
+**4.- addStroke()**
+Here we only set the **chartStroke** class to the bars in order to resalt their borders.
+```
+function addStroke(bars) {
+    bars.attr('class', 'chartStroke');
+}
+```
+
+**5.- addMouseEvents()**
+This is the last function for the bars file. Here we add interactions with the bars through the mouse events.We add functionallity to the **mouseover** (showing a hover), **mousemove** (showing the tooltip) and **mouseout** (hiding the hover and the tooltip)
+```
+function addMouseEvents(bars) {
+    bars.on("mouseover", showHover)
+        .on("mousemove", showTooltip)
+        .on("mouseout", hideHoverAndTooltip);
+}
+```
+
+Each event was coded in a different method. On the **mouseover** we call the **showHover** method. The idea is simply: as hover we want to resalt the color for the bar where the mouse is over. To do that, we get the current color and use the _darker_ method to increase the color intensity (we apply the own **HOVER_INTENSITY** factor)
+```
+function showHover(d) {
+    d3.select(this).style("fill", function() {
+        return d3.rgb(d3.select(this).style("fill")).darker(HOVER_INTENSITY);
+    });
+}
+```
+
+On the **mousemove** we call the **showTooltip** method. The idea is set the current mouse position and display the tooltip. And, of course, set the information (product and sales properties) to the bar where the mouse is on.
+```
+function showTooltip(d) {
+    tooltip
+        .style("left", d3.event.pageX + "px")
+        .style("top", d3.event.pageY + "px")
+        .style("display", "inline")
+        .html((d.product) + "<hr>" + "Sales: " + (d.sales));
+}
+```
+
+Finally, on the **mouseout** we call the **hideHoverAndTooltip** method. The idea is undo the changes over the bars done by the previous method. So, in this case, we simply get again the current color and use the _brighter_ method to decrease the color intensity (applying the same **HOVER_INTENSITY** factor than before). And, of course setting the tooltip display to none.
+```
+function hideHoverAndTooltip(d) {
+    d3.select(this).style("fill", function() {
+        return d3.rgb(d3.select(this).style("fill")).brighter(HOVER_INTENSITY);
+    });
+    hideTooltip();
+}
+function hideTooltip() {
+    tooltip.style("display", "none");
+}
+```
+
+---
+
+### legend.js
+This file contains all the function required to create the legend. Before start to explain every function here, let me remember the **appendLegend()** function
+```
+function appendLegend()
+{   
+    setupCanvasLegend();    
+    setupLegendScale();
+    
+    var legend = createLegend(svg);
+    addLegendElements(legend);
+    addLegendText(legend);
+}
+```
+
+Ok, so now, we will explain those 5 steps to generate the legend:
+
+**1.- setupCanvasLegend()**
+This first function calculate and keep the legend boder and legend content start positions (X and Y). The idea is use them to translate it to the right part in the svg, avoiding a posible interaction with the own bars in the chart.
+```
+function setupCanvasLegend() {
+    startPositionX = width + LEGEND_MARGIN_LEFT;
+    startPositionY = LEGEND_MARGIN_TOP;
+    startContentX = startPositionX + LEGEND_CONTENT_MARGIN_LEFT;
+    startContentY = startPositionY + LEGEND_CONTENT_MARGIN_TOP;
+}
+```
+
+**2.- setupLegendScale()**
+To create the legeng we will use the same concept that the used to create the bars in the chart. So, in the same way, we need to create a scale (discrete) to set a little square that will represent each bar.
+```
+function setupLegendScale()
+{
+    ylegend = d3.scaleBand()
+                .rangeRound([0, LEGEND_CONTENT_HEIGHT])
+                .domain(totalSales.map(function(d, i) {
+                    return d.product;
+                }));
+}
+```
+
+**3.- createLegend(svg)**
+To create the legend we will use 3 different elements: the **title**, the **rect** (to cover the legend items) and the **items**.
+```
+function createLegend(svg) {
+    createLegendTitle(svg);
+    createLegendRectangule(svg);    
+
+    var g = svg.append("g")
+                .attr("transform", "translate(" + (startContentX) + "," + (startContentY) + ")");
+
+    return g.append("g")
+            .attr("class", "legend")
+            .selectAll("g")
+            .data(totalSales)
+            .enter().append("g")
+            .attr("transform", function(d, i) { return "translate(0," + i * LEGEND_ELEMENT_HEIGHT + ")"; });
+}
+```
+
+The first point is create the legend **title**. To do that we only need to add a _text_ to the svg in the correct position (x, y) and set the class defined for the title **legendTitle**. And, of course, set the text _Legend_.
+```
+function createLegendTitle(svg) {
+    svg.append("text")
+        .attr("x", startPositionX + LEGEND_TITLE_MARGIN_LEFT)
+        .attr("y", 0)
+        .attr("class", "legendTitle")
+        .text("Legend");
+}
+```
+
+The second point is create a **rect** to surround the legend items. So, we add again an element (rect) to the svg and set the parameters to colocate it in the correct place (x, y, width and height).
+
+A comment is needed to explain the _height_ parameter: `attr('height', totalSales.length * LEGEND_ELEMENT_HEIGHT + LEGEND_MARGIN_TOP)`. How we can add more lines in the _data.json_ file, is it needed that the legend grow also in the same way. For that reason the height take into account the number of products to show.
+**Note**: It is not controlled the inclusion of a lot of lines. In this case, we will exceed the space in the svg for the legend.
+
+To end this function, we add two classes to the style **legendRect** and **chartStroke**
+```
+function createLegendRectangule(svg) {
+    svg.append("rect")
+                .attr('x', startPositionX)
+                .attr('width', LEGEND_WIDTH)
+                .attr('y', startPositionY)    
+                .attr('height', totalSales.length * LEGEND_ELEMENT_HEIGHT + LEGEND_MARGIN_TOP)
+                .attr('class', "legendRect chartStroke");
+}
+```
+
+To end the **createLegend()** function we create a group for the legend items and traslate it to the correct position (using the variables created before _startContentX_ and _startContentY_).
+
+Also, we add to the group the class created for the legend **legend**, set the data to use the same data than the bars in the chart and finally add a group for every item (translating each one to the correct position `i * LEGEND_ELEMENT_HEIGHT`.
+```
+var g = svg.append("g")
+                .attr("transform", "translate(" + (startContentX) + "," + (startContentY) + ")");
+
+    return g.append("g")
+            .attr("class", "legend")
+            .selectAll("g")
+            .data(totalSales)
+            .enter().append("g")
+            .attr("transform", function(d, i) { return "translate(0," + i * LEGEND_ELEMENT_HEIGHT + ")"; });
+```
+
+**4.- addLegendElements(legend)**
+Now it is time to create a rect for every item in the legend passed as parameter `legend.append("rect")`, and also set some parameters to each one like the _color_ (in the same way that in the bars for the chart), the _stroke_ (using the class **chartStroke**), the _width_ adn the _height_ (substracting some pixels to add space between each item `ylegend.bandwidth() - LEGEND_ELEMENT_SEPARATION`.
+```
+function addLegendElements(legend) {
+    legend.append("rect")
+            .attr("width", LEGEND_ELEMENT_WIDTH)
+            .attr('height', function(d, i) {
+                return ylegend.bandwidth() - LEGEND_ELEMENT_SEPARATION;
+            })
+            .attr('fill', function(d, i) {
+                return d.color;
+            })
+            .attr('class', 'chartStroke');
+            
+}
+```
+
+**5.- addLegendText(legend)**
+The idea is the same than in the previus method: add a _text_ for every item and set the location (x, y), the text style and the text to show.
+```
+function addLegendText(legend) {
+    legend.append("text")
+            .attr("x", LEGEND_TEXT_ELEMENT_START_X)
+            .attr("y", LEGEND_TEXT_ELEMENT_START_Y)
+            .attr("dy", ".35em")
+            .text(function(d) { return d.product; });
+}
+```
