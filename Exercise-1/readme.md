@@ -65,7 +65,7 @@ We will use the following data in json format
 
 Chart was coded to support add or remove new products (always following the same format that the default ones).
 
-The attribute **color** define the **color bar** for the product (we will see where is exactly used this attribute in the bars.js file section.
+The attribute **color** define the **color bar** for the product (we will see where is exactly used this attribute in the bars.js file section).
 
 ---
 
@@ -89,7 +89,7 @@ The following classes were included to the styles file:
 ---
 
 ### data.js
-In this file we will read the data from the _data.json_ file. To do that, we will use the **d3.json** functionallity. To avoid synchronization problems, we add the load to a queue. So, when the load is finished, is executed a _ready_ function that start the chart building
+In this file we will read the data from the _data.json_ file. To do that, we will use the **d3.json** functionallity. To avoid synchronization problems, we add the load to a queue. So, when the load is finished, is executed the _ready_ function that start the chart building (**buildChart()** is the main function in the main file).
 ```
 var totalSales = null;
 
@@ -108,6 +108,34 @@ function ready(error, data) {
 
 ### utils.js
 This is a file that will contain some constants used to code the exercise. The idea is try to give a name to some numbers in order to be easy to read some attributes customization.
+```
+// SVG constants
+var SVG_WIDTH = 970;
+var SVG_HEIGHT = 400;
+
+// Bar Chart Constants
+var MARGIN_TOP = 20;
+var MARGIN_LEFT = 40;
+var MARGIN_BOTTOM = 20;
+var MARGIN_RIGHT = 130; 
+
+// Bar Constants
+var HOVER_INTENSITY = 0.7;
+
+// Legend Constants
+var LEGEND_WIDTH = 100;
+var LEGEND_CONTENT_HEIGHT = 130;
+var LEGEND_MARGIN_LEFT = 10;
+var LEGEND_MARGIN_TOP = 10;
+var LEGEND_CONTENT_MARGIN_TOP = 10;
+var LEGEND_CONTENT_MARGIN_LEFT = 10;
+var LEGEND_ELEMENT_HEIGHT = 25;
+var LEGEND_ELEMENT_WIDTH = 20;
+var LEGEND_ELEMENT_SEPARATION = 2;
+var LEGEND_TITLE_MARGIN_LEFT = 25;
+var LEGEND_TEXT_ELEMENT_START_X = 70;
+var LEGEND_TEXT_ELEMENT_START_Y = 8;
+```
 
 ---
 
@@ -115,6 +143,7 @@ This is a file that will contain some constants used to code the exercise. The i
 This is the main file. Here we setup each chart part (scales, axis, bars, legend). We will try to explain fucntion by function the code:
 
 **buildChart()**
+
 This is the main function. The point where the building start. It is called from the _data.js_ file just when the _data.json_ file is loaded.This function call one by one all the functions needed to build the bar chart.
 ```
 function buildChart() {
@@ -130,6 +159,7 @@ function buildChart() {
 ```
 
 **setupCanvasSize()**
+
 Here we set the margins, the width and the height that the bar chart will have.
 ```
 function setupCanvasSize() {
@@ -140,6 +170,7 @@ function setupCanvasSize() {
 ```
 
 **appendSvg(domElement)**
+
 The first real step is done in this function and is add to the _domElement_ (**body**) a **svg** using the size variables defined before. Also, the _svgStyle_ is applied and the svg is including in a grou to be translate in order to give some space on top and on the left.
 ```
 function appendSvg(domElement) {
@@ -154,6 +185,7 @@ function appendSvg(domElement) {
 ![No padding](../pictures/exercise1-svginitial.png "Chart Axis")
 
 **setupXScale()**
+
 Here we define the scale for the X axis (getting every product in totalSales array). This will be a discrete scale (for this case one per product). The scale will be **from 0 to the X axis width**.
 ```
 function setupXScale()
@@ -168,6 +200,7 @@ function setupXScale()
 ```
 
 **setupYScale()**
+
 Here we define the scale for the Y axis (getting the max value for the sales property in all the products loaded from _data.json_).
 ```
 function setupYScale()
@@ -193,6 +226,7 @@ function setupYScale()
 ```
 
 **appendXAxis()**
+
 In this function we are adding the X axis to the bar chart. To do it, we create a new group and traslate it to the bottom (the chart height). Also, the scale for the X axis is set here (d3.axisBottom(x)).
 ```
 function appendXAxis() {
@@ -203,6 +237,7 @@ function appendXAxis() {
 ```
 
 **appendYAxis()**
+
 In this function we are adding the Y axis to the bar chart. To do it, we create a new group (this time is not necessary traslete it, is already on the left-top corner). Also, the scale for the Y axis is set here (d3.axisLeft(y)).
 ```
 function appendYAxis() {
@@ -215,6 +250,7 @@ Now we have the axis.
 ![No padding](../pictures/exercise1-Axis.png "Chart Axis")
 
 **appendChartBars()**
+
 This function is responsible for creating the bars and the interactions over them. There are several actions to configure the bars (because of that, we have a specific file to work with the bars (**bars.js**)) that we will explain in the next section.
 
 This function will call the different method needed to build the bars and add to them interactions. I think that the functions names are clearly enough so I will not enter in a deep description of them here.
@@ -239,6 +275,7 @@ Now we have also the bars.
 ![No padding](../pictures/exercise1-Bars.png "Chart Axis")
 
 **appendLegend()**
+
 The philosophy in this function is the same than in the function before. It is the responsible to create the legend, but all the actions are in a specific file (**legend.js**).
 
 I think that the functions names are clearly enough so I will not enter in a deep description of them here.
@@ -282,6 +319,7 @@ Ok, so now, we will explain those 5 steps to generate the bars:
 
 
 **1.- setupToolTip()**
+
 Basically is create the tooltip that will be showed when we pass with the mouse over one of the bars. The tooltip is a div that we will modified the content with the correct information (we will see that when we explain the _onmousemove_ action).
 
 Also, the tooltip will have the **toolTip** class to give it style.
@@ -295,6 +333,7 @@ Tooltip example:
 ![No padding](../pictures/exercise1-tooltip.png "Chart Axis")
 
 **2.- addRect()**
+
 This is the function that add the bars to the chart. Each bar have 4 parameters, **x**, **width**, **y** and **height**. We have defined a function to get the correct value of each one for each bar.
 ```
 function addRect(bars) {
@@ -319,7 +358,7 @@ function setBarStartPositionX(d, i) {
     return x(d.product) + 5;
 }
 ```
-![No padding](../pictures/exercise1-full.png "Chart Axis")
+![No padding](../pictures/exercise1-Full.png "Chart Axis")
 
 For the **y** and **height** parameters we do something similar (add and substract 0.5 in order to separete a little the bar for the X axis and don't exceed the height). The heihgt is defined by the value in the sales property (_YScale_)
 ```
@@ -333,6 +372,7 @@ function setBarEndPositionY(d, i) {
 ```
 
 **3.- addColor()**
+
 This function give color to each bar.We have to remember that we set to the rect data our variable with the json information `svg.selectAll('rect').data(totalSales)`, so now, we only need to access to the color attribute and use it to fill the rect that represent the bar.
 ```
 function addColor(bars) {
@@ -343,6 +383,7 @@ function addColor(bars) {
 ```
 
 **4.- addStroke()**
+
 Here we only set the **chartStroke** class to the bars in order to resalt their borders.
 ```
 function addStroke(bars) {
@@ -351,6 +392,7 @@ function addStroke(bars) {
 ```
 
 **5.- addMouseEvents()**
+
 This is the last function for the bars file. Here we add interactions with the bars through the mouse events.We add functionallity to the **mouseover** (showing a hover), **mousemove** (showing the tooltip) and **mouseout** (hiding the hover and the tooltip)
 ```
 function addMouseEvents(bars) {
@@ -412,6 +454,7 @@ function appendLegend()
 Ok, so now, we will explain those 5 steps to generate the legend:
 
 **1.- setupCanvasLegend()**
+
 This first function calculate and keep the legend boder and legend content start positions (X and Y). The idea is use them to translate it to the right part in the svg, avoiding a posible interaction with the own bars in the chart.
 ```
 function setupCanvasLegend() {
@@ -423,6 +466,7 @@ function setupCanvasLegend() {
 ```
 
 **2.- setupLegendScale()**
+
 To create the legeng we will use the same concept that the used to create the bars in the chart. So, in the same way, we need to create a scale (discrete) to set a little square that will represent each bar.
 ```
 function setupLegendScale()
@@ -436,6 +480,7 @@ function setupLegendScale()
 ```
 
 **3.- createLegend(svg)**
+
 To create the legend we will use 3 different elements: the **title**, the **rect** (to cover the legend items) and the **items**.
 ```
 function createLegend(svg) {
@@ -498,6 +543,7 @@ var g = svg.append("g")
 ```
 
 **4.- addLegendElements(legend)**
+
 Now it is time to create a rect for every item in the legend passed as parameter `legend.append("rect")`, and also set some parameters to each one like the _color_ (in the same way that in the bars for the chart), the _stroke_ (using the class **chartStroke**), the _width_ adn the _height_ (substracting some pixels to add space between each item `ylegend.bandwidth() - LEGEND_ELEMENT_SEPARATION`.
 ```
 function addLegendElements(legend) {
@@ -515,6 +561,7 @@ function addLegendElements(legend) {
 ```
 
 **5.- addLegendText(legend)**
+
 The idea is the same than in the previus method: add a _text_ for every item and set the location (x, y), the text style and the text to show.
 ```
 function addLegendText(legend) {
