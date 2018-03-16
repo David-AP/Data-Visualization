@@ -71,9 +71,16 @@ function showTooltip(d) {
     tooltip.style("left", d3.event.pageX + "px")
             .style("top", d3.event.pageY + "px")
             .style("display", "inline")
-            .html((d.month) + "<hr>" + "Sales: " + (d.sales));
+            .html(dateToString(d.month) + "<hr>" + "Sales: " + (d.sales));
 }
   
 function hideTooltip() {
     tooltip.style("display", "none");
+}
+
+function dateToString(millis) {
+    // Review https://docs.microsoft.com/en-us/scripting/javascript/date-and-time-strings-javascript
+    var date = (new Date(millis)).toLocaleDateString('en-US');
+
+    return date;
 }

@@ -6,13 +6,15 @@ let svg = null;
 let x, y = null;
 
 // Main Process
-setupCanvasSize();
-appendSvg("body");
-setupXScale();
-setupYScale();
-appendXAxis();
-appendYAxis();
-appendLineCharts();
+function buildChart() {
+  setupCanvasSize();
+  appendSvg("body");
+  setupXScale();
+  setupYScale();
+  appendXAxis();
+  appendYAxis();
+  appendLineCharts();
+}
 
 
 // Canvas Size for our SVG
