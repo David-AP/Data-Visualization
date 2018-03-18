@@ -327,6 +327,7 @@ Tooltip examples:
 ![No padding](../pictures/exercise2-line_tooltip.png "Line tooltip")
 
 **2.- createLines()**
+
 This is the function that add the lines to the chart. The idea is define a line using the month value as coordinate x and the sales value as coordinate y and draw the line creating a path.
 ```
 function createLines(svg) {
@@ -390,7 +391,8 @@ function hideLineTooltip() {
 }
 ```
 
-**2.- createDots()**
+**3.- createDots()**
+
 This is the function that add the dots to the lines in the chart. The idea is create all the dots independently (remember that we have all of them in the list arrays **pointList**) and put them on the chart using the x and y scale. We mean, instead of be part of the lines, are part of the chart.
 ```
 function createDots(svg) {  
@@ -467,3 +469,20 @@ function hideTooltip() {
     tooltip.style("display", "none");
 }
 ```
+
+---
+---
+
+Example adding new Month and new temporal serie
+```
+[
+    { "month": 1475272800000,"Gloves": 6500, "Hoodies": 3500, "Jackets": 2000, "scarves": 1500},
+    { "month": 1477954800000, "Gloves": 5400, "Hoodies": 3900, "Jackets": 2000, "scarves": 2500 },
+    { "month": 1480546800000, "Gloves": 3500, "Hoodies": 2200, "Jackets": 2000, "scarves": 3500 },
+    { "month": 1483225200000, "Gloves": 9000, "Hoodies": 4500, "Jackets": 2000, "scarves": 7500 },
+    { "month": 1485903600000, "Gloves": 8500, "Hoodies": 10000, "Jackets": 2000, "scarves": 8500 },
+    { "month": 1488322800000, "Gloves": 3500, "Hoodies": 4000, "Jackets": 3000, "scarves": 500 },
+    { "month": 1490997600000, "Gloves": 5500, "Hoodies": 2000, "Jackets": 7000, "scarves": 100 }
+]
+```
+![No padding](../pictures/exercise2-newLine-newMonth.png "Adding April and Scarves")
