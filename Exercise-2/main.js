@@ -77,6 +77,6 @@ function appendYAxis() {
 function appendLineCharts()
 {
   setupToolTip();
-  createPaths(svg);
+  createLines(svg);
   createDots(svg);  
 }

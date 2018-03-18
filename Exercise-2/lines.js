@@ -8,16 +8,18 @@ function setupToolTip()
 }
 
 // Adding paths to the lines chart
-function createPaths(svg) {
+function createLines(svg) {
     // define the line
     var valueline = d3.line()
                         .x(function(d) { return x(d.month); })
                         .y(function(d) { return y(d.sales); });
 
+    // add all lines to teh svg (datalist contains that information)
     var lines = svg.selectAll(".line")
                 .data(dataList)
                 .enter().append("g");
 
+    // Create a path per line
     lines.append("path")
                 .attr("class", "line")
                 .attr("d", valueline)
@@ -54,7 +56,7 @@ function createDots(svg) {
     var dots =  svg.selectAll("circle")
         .data(pointList)
         .enter().append("circle")
-        .attr("class", "dot")      
+        .attr("class", "dot")
         .attr("cx", function(d) { return x(d.month); })
         .attr("cy", function(d) { return y(d.sales); })
         .attr("r", DOT_RADIOUS);

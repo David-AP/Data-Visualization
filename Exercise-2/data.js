@@ -17,17 +17,22 @@ queue()
 // We must wait to read the data before start the chart built
 function ready(error, data) {
     totalSales = data;
+
+    // Get the field names
     var dataKeys = Object.keys(totalSales[0]);    
     
+    // Get data for every line
     for(var i = 1, len = dataKeys.length; i < len; i++){
         dataList.push(totalSales.map(data => ({month: data.month, name: dataKeys[i], sales: data[dataKeys[i]]})));
     }
 
+    // Get data for every point
     for(var i = 0, len = totalSales.length; i < len; i++) {
         for(var j = 1, lenj = dataKeys.length; j < lenj; j++) {
             pointList.push({month: totalSales[i].month, name: dataKeys[j], sales: totalSales[i][dataKeys[j]]});
         }
     }
 
+    // Create the chart
     buildChart();
 }
