@@ -1,7 +1,8 @@
 [
-    { "month": 1475272800000,"sales": 6500, "sales2": 3500, "sales3": 2000 },
-    { "month": 1477954800000, "sales": 5400, "sales2": 3900, "sales3": 2000 },
-    { "month": 1480546800000, "sales": 3500, "sales2": 2200, "sales3": 2000 },
-    { "month": 1483225200000, "sales": 9000, "sales2": 4500, "sales3": 2000 },
-    { "month": 1485903600000, "sales": 8500, "sales2": 10000, "sales3": 2000 }
+    { "month": 1475272800000,"Gloves": 6500, "Hoodies": 3500, "Jackets": 2000 },
+    { "month": 1477954800000, "Gloves": 5400, "Hoodies": 3900, "Jackets": 2000 },
+    { "month": 1480546800000, "Gloves": 3500, "Hoodies": 2200, "Jackets": 2000 },
+    { "month": 1483225200000, "Gloves": 9000, "Hoodies": 4500, "Jackets": 2000 },
+    { "month": 1485903600000, "Gloves": 8500, "Hoodies": 10000, "Jackets": 2000 },
+    { "month": 1488322800000, "Gloves": 3500, "Hoodies": 4000, "Jackets": 3000 }
 ]

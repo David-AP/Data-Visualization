@@ -1,9 +1,10 @@
-let tooltip = null;
+let tooltip, linetooltip = null;
 
 // Setup tooltip showed when click the dots
 function setupToolTip()
 {
     tooltip = d3.select("body").append("div").attr("class", "toolTip");
+    linetooltip = d3.select("body").append("div").attr("class", "toolTip");
 }
 
 // Adding paths to the lines chart
@@ -21,18 +22,32 @@ function createPaths(svg) {
                 .attr("class", "line")
                 .attr("d", valueline)
                 .on("mouseover", showLineHover)
-                .on("mouseout", hideHoverLine);
+                .on("mouseout", hideHoverLine)
+                .on("mousemove", showLineTooltip);
 }
 
 function showLineHover(d) {
     d3.select(this)
       .attr("class", "lineHover");
-  }
+}
   
-  function hideHoverLine(d) {
+function hideHoverLine(d) {
     d3.select(this)
       .attr("class", "line");
-  }
+
+    hideLineTooltip();
+}
+
+function showLineTooltip(d) {
+    linetooltip.style("left", d3.event.pageX + "px")
+            .style("top", d3.event.pageY + "px")
+            .style("display", "inline")
+            .html("Sales evolution" + "<hr>" + d[0].name);
+}
+
+function hideLineTooltip() {
+    linetooltip.style("display", "none");
+}
 
 // Adding dots to the lines
 function createDots(svg) {  
@@ -71,7 +86,7 @@ function showTooltip(d) {
     tooltip.style("left", d3.event.pageX + "px")
             .style("top", d3.event.pageY + "px")
             .style("display", "inline")
-            .html(dateToString(d.month) + "<hr>" + "Sales: " + (d.sales));
+            .html(dateToString(d.month) + "<hr>" + d.name + (": ") + d.sales);
 }
   
 function hideTooltip() {
@@ -79,8 +94,14 @@ function hideTooltip() {
 }
 
 function dateToString(millis) {
-    // Review https://docs.microsoft.com/en-us/scripting/javascript/date-and-time-strings-javascript
-    var date = (new Date(millis)).toLocaleDateString('en-US');
+    var options = {  
+        weekday: "long", 
+        year: "numeric", 
+        month: "long",  
+        day: "numeric"  
+    }; 
+
+    var date = (new Date(millis)).toLocaleDateString('en-US', options);  
 
     return date;
 }

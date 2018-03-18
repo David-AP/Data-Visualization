@@ -20,12 +20,12 @@ function ready(error, data) {
     var dataKeys = Object.keys(totalSales[0]);    
     
     for(var i = 1, len = dataKeys.length; i < len; i++){
-        dataList.push(totalSales.map(data => ({month: data.month, sales: data[dataKeys[i]]})));
+        dataList.push(totalSales.map(data => ({month: data.month, name: dataKeys[i], sales: data[dataKeys[i]]})));
     }
 
     for(var i = 0, len = totalSales.length; i < len; i++) {
         for(var j = 1, lenj = dataKeys.length; j < lenj; j++) {
-            pointList.push({month: totalSales[i].month, sales: totalSales[i][dataKeys[j]]});
+            pointList.push({month: totalSales[i].month, name: dataKeys[j], sales: totalSales[i][dataKeys[j]]});
         }
     }
 
