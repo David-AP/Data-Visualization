@@ -1,57 +1,92 @@
 var format = d3.format(",");
+let data;
+let populationById = {};
 
 // Set tooltips
 var tip = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-10, 0])
-  .html(function (d) {
-    return "<strong>Country: </strong><span class='details'>" + d.properties.name + 
+    .attr('class', 'd3-tip')
+    .offset([150, 100])
+    .html(function (d) {
+        return "<strong>Country: </strong><span class='details'>" + d.properties.name + 
            "<br></span>" + 
            "<strong>Population: </strong><span class='details'>" + format(d.population) + 
            "<br></span>" +
            "<strong>Year: </strong><span class='details'>" + d.year + 
            "</span>";
-  })
+    })
 
-var margin = { top: 0, right: 0, bottom: 0, left: 0 },
-  width = 960 - margin.left - margin.right,
-  height = 500 - margin.top - margin.bottom;
+var margin = { top: 0, right: 0, bottom: 0, left: 0 };
+var width = SVG_WIDTH - margin.left - margin.right;
+var height = SVG_HEIGHT - margin.top - margin.bottom;
 
+// Color range according to the population
 var color = d3.scaleThreshold()
-  .domain([10000, 100000, 500000, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000, 1500000000])
-  .range(["rgb(247,251,255)", "rgb(222,235,247)", "rgb(198,219,239)", "rgb(158,202,225)", "rgb(107,174,214)", "rgb(66,146,198)", "rgb(33,113,181)", "rgb(8,81,156)", "rgb(8,48,107)", "rgb(3,19,43)"]);
+    .domain(POPULATION_RANGES)
+    .range(POPULATION_RANGES_COLOR);
 
 var path = d3.geoPath();
 
+// Combo Box
+var select = d3.select("body")
+    .append('select')
+    .attr('class','select')
+    .on('change', updateMap);
+
+// Map
 var svg = d3.select("body")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height)
-  .append('g')
-  .attr('class', 'map');
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("class", "svgStyle")
+    .append('g')
+    .attr('class', 'map');
 
 var projection = d3.geoMercator()
-  .scale(130)
-  .translate([width / 2, height / 1.5]);
+    .scale(130)
+    .translate([width / 2, height / 1.5]);
 
-var path = d3.geoPath().projection(projection);
+var path = d3.geoPath()
+    .projection(projection);
 
 svg.call(tip);
 
 // World_countries extracted from: https://raw.githubusercontent.com/jdamiani27/Data-Visualization-and-D3/master/lesson4/world_countries.json
 queue()
   .defer(d3.json, "world_countries.json")
-  .await(ready);
+  .await(createMap);
 
-function ready(error, data) {
-  var populationById = {};
+// After Load world_countries file, we create the Map
+function createMap(error, countriesData) {
+  data = countriesData;
 
-  var yearData = countrydata.filter(data => data.Year === 2010)
-                            .map(data => ({id: data["Country Code"], population: data.Value}))
+  // List of years to feed the Combo Box
+  var years = [];
+  var startYear = countrydata.reduce((first, row) => Math.min(first, row.Year), MAX_YEAR);
+  var endYear = countrydata.reduce((last, row) => Math.max(last, row.Year), MIN_YEAR);
+  
+  for(var i = startYear; i <= endYear; i++){
+      years.push(i);
+  }
 
+  // Feed Combo box with the years
+  var options = select
+      .selectAll('option')
+      .data(years).enter()
+      .append('option')
+      .text(function (d) { return d; });
+
+  // In the first load, we will obtain the data for the startYear
+  populationById = {};
+  // Get Data (Country code and population) needed for the year filtered
+  var yearData = countrydata
+      .filter(data => data.Year === startYear)
+      .map(data => ({id: data["Country Code"], population: data.Value}))
+  // Prepare a map with the population (value) by id (Key)
   yearData.forEach(function (d) { populationById[d.id] = +d.population; });
-  data.features.forEach(function (d) { d.population = populationById[d.id], d.year = 2010 });
-
+  // Add to the Countries data the selected year and the population for that year
+  data.features.forEach(function (d) { d.population = populationById[d.id], d.year = startYear });
+  
+  // Adding countries information to the Map
   svg.append("g")
     .attr("class", "countries")
     .selectAll("path")
@@ -59,26 +94,51 @@ function ready(error, data) {
     .enter().append("path")
     .attr("d", path)
     .style("fill", function (d) { return color(populationById[d.id]); })
-    .style('stroke', 'white')
-    .style('stroke-width', 1.5)
-    .style("opacity", 0.8)
-    // tooltips
-    .style("stroke", "white")
-    .style('stroke-width', 0.3)
-    .on('mouseover', function (d) {
-      tip.show(d);
-
-      d3.select(this)
-        .style("opacity", 1)
-        .style("stroke", "white")
-        .style("stroke-width", 3);
-    })
-    .on('mouseout', function (d) {
-      tip.hide(d);
-
-      d3.select(this)
-        .style("opacity", 0.8)
-        .style("stroke", "white")
-        .style("stroke-width", 0.3);
-    });
+    .attr("class", "countriesStyle")
+    .on('mouseover', showCountryHoverAndTip)
+    .on('mouseout', hideCountryHoverAndTip);
 }
+
+function showCountryHoverAndTip(d) {
+  tip.show(d);
+
+  d3.select(this)
+      .style("opacity", 1)
+      .style("stroke", "Black")
+      .style("stroke-width", 2);
+}
+
+function hideCountryHoverAndTip(d) {
+  tip.hide(d);
+
+  d3.select(this)
+      .style("opacity", 0.8)
+      .style("stroke", "Black")
+      .style("stroke-width", 0.5);
+}
+
+// Function to refresh the Map using a specific year
+function RefreshMap(year) {
+  // Prepare data for the year selected
+  populationById = {};
+  var yearData = countrydata
+      .filter(data => data.Year === year)
+      .map(data => ({id: data["Country Code"], population: data.Value}))
+  yearData.forEach(function (d) { populationById[d.id] = +d.population; });
+  data.features.forEach(function (d) { d.population = populationById[d.id], d.year = year });
+
+  // Refresh the countries using the data for the new year selected
+  var refresh = d3.select("body").transition();
+  refresh.select(".countries")
+            .duration(REFRESH_DURATION)
+            .selectAll("path")
+            .style("fill", function (d) { return color(populationById[d.id]); });
+}
+
+// ComboBox on change
+function updateMap() {
+  // Select current year for the combobox
+  selectValue = d3.select('select').property('value')
+  // Refresh map with the year selected
+  RefreshMap(parseInt(selectValue));  
+};

@@ -1,7 +1,11 @@
-.names {
-  fill: none;
-  stroke: #fff;
-  stroke-linejoin: round;
+.svgStyle {
+  background-color: #EAF0FA;
+}
+
+.countriesStyle {
+  opacity: 0.8;
+  stroke: #000000;
+  stroke-width: 0.6;
 }
 
 /* Tooltip CSS */
@@ -11,9 +15,9 @@
   font-weight: 400;
   font-family: "avenir next", Arial, sans-serif;
   padding: 6px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
   color: #FFA500;
-  border-radius: 1px;
+  border-radius: 7px;
   pointer-events: none;
 }
 
@@ -25,7 +29,7 @@
   font-size: 8px;
   width: 100%;
   line-height: 1.5;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.8);
   position: absolute;
   pointer-events: none;
 
@@ -70,5 +74,5 @@
 }
 
 .details {
-  color: white;
+  color: whitesmoke;
 }
