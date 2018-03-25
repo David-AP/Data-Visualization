@@ -1,6 +1,6 @@
 // SVG constants
-var SVG_WIDTH = 960;
-var SVG_HEIGHT = 500;
+var SVG_WIDTH = 820;
+var SVG_HEIGHT = 785;
 
 // Color range constants
 var POPULATION_RANGES = [10000, 100000, 500000, 1000000, 5000000, 10000000, 50000000, 100000000, 500000000, 1500000000];
@@ -13,3 +13,7 @@ var TEXT = "Select Year: ";
 
 // Refresh constants
 var REFRESH_DURATION = 750;
+
+// Map Trasnlation Constants
+var POSITION_X = 0;
+var POSITION_Y = -147;

@@ -42,6 +42,7 @@ var svg = d3.select("#columnRight")
     .attr("height", height)
     .attr("class", "svgStyle")
     .append('g')
+    .attr("transform", "translate(" + POSITION_X + "," + POSITION_Y + ")")
     .attr('class', 'map');
 
 // Create the projection (how to represent a point on a sphere)
