@@ -9,6 +9,7 @@ var POPULATION_RANGES_COLOR = ["rgb(247,251,255)", "rgb(222,235,247)", "rgb(198,
 // Years constants
 var MAX_YEAR = 9999;
 var MIN_YEAR = 0;
+var TEXT = "Select Year: ";
 
 // Refresh constants
 var REFRESH_DURATION = 750;

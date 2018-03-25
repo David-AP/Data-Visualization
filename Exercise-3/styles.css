@@ -2,6 +2,26 @@
   background-color: #EAF0FA;
 }
 
+.rowStyle {
+  display: flex;
+  justify-content: center;
+  display: table-cell;
+  vertical-align: middle;
+  height: 500px;
+}
+
+.selectStyle {
+  background-color: #EAF0FA;
+  padding-left: 5px;
+}
+
+.yearStyle {
+  font-family: "avenir next", Arial, sans-serif;
+  font-size: 20px;
+  color: rgb(33,113,181);
+  font-weight: bold;
+}
+
 .countriesStyle {
   opacity: 0.8;
   stroke: #000000;
@@ -9,7 +29,6 @@
 }
 
 /* Tooltip CSS */
-
 .d3-tip {
   line-height: 1.5;
   font-weight: 400;

@@ -24,16 +24,19 @@ var color = d3.scaleThreshold()
     .domain(POPULATION_RANGES)
     .range(POPULATION_RANGES_COLOR);
 
-var path = d3.geoPath();
-
 // Combo Box
-var select = d3.select("body")
+d3.select("#columnLeft")
+    .append("text")
+    .attr("class", "yearStyle")
+    .text(TEXT);
+
+var select = d3.select("#columnLeft")
     .append('select')
     .attr('class','select')
     .on('change', updateMap);
 
 // Map
-var svg = d3.select("body")
+var svg = d3.select("#columnRight")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
@@ -41,6 +44,7 @@ var svg = d3.select("body")
     .append('g')
     .attr('class', 'map');
 
+// Create the projection (how to represent a point on a sphere)
 var projection = d3.geoMercator()
     .scale(130)
     .translate([width / 2, height / 1.5]);
@@ -48,55 +52,56 @@ var projection = d3.geoMercator()
 var path = d3.geoPath()
     .projection(projection);
 
+// Set the tooltip to the svg
 svg.call(tip);
 
 // World_countries extracted from: https://raw.githubusercontent.com/jdamiani27/Data-Visualization-and-D3/master/lesson4/world_countries.json
 queue()
-  .defer(d3.json, "world_countries.json")
-  .await(createMap);
+    .defer(d3.json, "world_countries.json")
+    .await(createMap);
 
 // After Load world_countries file, we create the Map
 function createMap(error, countriesData) {
-  data = countriesData;
+    data = countriesData;
 
-  // List of years to feed the Combo Box
-  var years = [];
-  var startYear = countrydata.reduce((first, row) => Math.min(first, row.Year), MAX_YEAR);
-  var endYear = countrydata.reduce((last, row) => Math.max(last, row.Year), MIN_YEAR);
+    // List of years to feed the Combo Box
+    var years = [];
+    var startYear = countrydata.reduce((first, row) => Math.min(first, row.Year), MAX_YEAR);
+    var endYear = countrydata.reduce((last, row) => Math.max(last, row.Year), MIN_YEAR);
   
-  for(var i = startYear; i <= endYear; i++){
-      years.push(i);
-  }
+    for(var i = startYear; i <= endYear; i++){
+        years.push(i);
+    }
 
-  // Feed Combo box with the years
-  var options = select
-      .selectAll('option')
-      .data(years).enter()
-      .append('option')
-      .text(function (d) { return d; });
+    // Feed Combo box with the years
+    var options = select
+        .selectAll('option')
+        .data(years).enter()
+        .append('option')
+        .text(function (d) { return d; });
 
-  // In the first load, we will obtain the data for the startYear
-  populationById = {};
-  // Get Data (Country code and population) needed for the year filtered
-  var yearData = countrydata
-      .filter(data => data.Year === startYear)
-      .map(data => ({id: data["Country Code"], population: data.Value}))
-  // Prepare a map with the population (value) by id (Key)
-  yearData.forEach(function (d) { populationById[d.id] = +d.population; });
-  // Add to the Countries data the selected year and the population for that year
-  data.features.forEach(function (d) { d.population = populationById[d.id], d.year = startYear });
-  
-  // Adding countries information to the Map
-  svg.append("g")
-    .attr("class", "countries")
-    .selectAll("path")
-    .data(data.features)
-    .enter().append("path")
-    .attr("d", path)
-    .style("fill", function (d) { return color(populationById[d.id]); })
-    .attr("class", "countriesStyle")
-    .on('mouseover', showCountryHoverAndTip)
-    .on('mouseout', hideCountryHoverAndTip);
+    // In the first load, we will obtain the data for the startYear
+    populationById = {};
+    // Get Data (Country code and population) needed for the year filtered
+    var yearData = countrydata
+        .filter(data => data.Year === startYear)
+        .map(data => ({id: data["Country Code"], population: data.Value}))
+    // Prepare a map with the population (value) by id (Key)
+    yearData.forEach(function (d) { populationById[d.id] = +d.population; });
+    // Add to the Countries data the selected year and the population for that year
+    data.features.forEach(function (d) { d.population = populationById[d.id], d.year = startYear });
+    
+    // Adding countries information to the Map
+    svg.append("g")
+        .attr("class", "countries")
+        .selectAll("path")
+        .data(data.features)
+        .enter().append("path")
+        .attr("d", path)
+        .style("fill", function (d) { return color(populationById[d.id]); })
+        .attr("class", "countriesStyle")
+        .on('mouseover', showCountryHoverAndTip)
+        .on('mouseout', hideCountryHoverAndTip);
 }
 
 function showCountryHoverAndTip(d) {
