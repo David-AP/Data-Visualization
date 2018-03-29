@@ -1,6 +1,7 @@
 var format = d3.format(",");
 let data;
 let populationById = {};
+let startYear, endYear;
 
 // Set tooltips
 var tip = d3.tip()
@@ -25,18 +26,31 @@ var color = d3.scaleThreshold()
     .range(POPULATION_RANGES_COLOR);
 
 // Combo Box
-d3.select("#columnLeft")
+d3.select("#yearSelection")
     .append("text")
     .attr("class", "yearStyle")
     .text(TEXT);
 
-var select = d3.select("#columnLeft")
+var select = d3.select("#yearSelection")
     .append('select')
-    .attr('class','select')
+    .attr('class','select comboStyle')
     .on('change', updateMap);
 
+// Button
+var button = d3.select("#animationButton")
+    .append("input")
+    .attr("type", "button")
+    .attr("name", "toggle")
+    .attr("value", TEXT_ANIMATION)
+    .attr("onclick", "runAnimation()"); 
+
+var animationyear = d3.select("#AnimationText")
+    .append("text")
+    .attr("class", "yearStyle")
+    .text("1960");
+
 // Map
-var svg = d3.select("#columnRight")
+var svg = d3.select("#RowBottom")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
@@ -67,8 +81,8 @@ function createMap(error, countriesData) {
 
     // List of years to feed the Combo Box
     var years = [];
-    var startYear = countrydata.reduce((first, row) => Math.min(first, row.Year), MAX_YEAR);
-    var endYear = countrydata.reduce((last, row) => Math.max(last, row.Year), MIN_YEAR);
+    startYear = countrydata.reduce((first, row) => Math.min(first, row.Year), MAX_YEAR);
+    endYear = countrydata.reduce((last, row) => Math.max(last, row.Year), MIN_YEAR);
   
     for(var i = startYear; i <= endYear; i++){
         years.push(i);
@@ -139,6 +153,10 @@ function RefreshMap(year) {
             .duration(REFRESH_DURATION)
             .selectAll("path")
             .style("fill", function (d) { return color(populationById[d.id]); });
+
+  animationyear
+      .transition().duration(REFRESH_DURATION)
+      .text(year);
 }
 
 // ComboBox on change
@@ -148,3 +166,20 @@ function updateMap() {
   // Refresh map with the year selected
   RefreshMap(parseInt(selectValue));  
 };
+
+// To execute on animation button click
+function runAnimation()
+{
+  var year = startYear;
+  function mapAnimation() {
+      RefreshMap(year);
+      select.property('value', year);
+      year++;
+      // Every iteration call have a delay close to 1 second in order to simulate the animation
+      if( year <= endYear ){
+          setTimeout( mapAnimation, REFRESH_DURATION );
+      }
+  }
+
+  mapAnimation();
+}

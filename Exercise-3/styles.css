@@ -2,7 +2,7 @@
   background-color: #EAF0FA;
 }
 
-.rowStyle {
+.columnStyle {
   display: flex;
   justify-content: center;
   display: table-cell;
@@ -10,9 +10,48 @@
   height: 500px;
 }
 
+.headerStyle {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.yearSelectionStyle {
+  width: 80%;
+}
+
+.animationSectionStyle {
+  width: 20%;
+}
+
+.mapAnimationStyle {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.animationButtonStyle {
+  width: 50%;
+  vertical-align: middle;
+}
+
+.animationTextStyle {
+  width: 50%;
+  text-align: center;
+  vertical-align: middle;
+}
+
 .selectStyle {
   background-color: #EAF0FA;
   padding-left: 5px;
+}
+
+.comboStyle {
+  vertical-align: middle;
 }
 
 .yearStyle {
@@ -20,6 +59,7 @@
   font-size: 19px;
   color: rgb(33,113,181);
   font-weight: bold;
+  vertical-align: middle;
 }
 
 .countriesStyle {
