@@ -15,9 +15,10 @@ Alternative, propose an advance map scenario (spain or europe), and use other da
 ---
 ---
 
-### SCREENSHOT
+### SCREENSHOTS
 
 ![No padding](../pictures/exercise3-Map.png "Adding April and Scarves")
+![No padding](../pictures/exercise3-Map2016.png "Adding April and Scarves")
 
 ---
 ---
@@ -190,6 +191,8 @@ var tip = d3.tip()
     })
 ```
 
+![No padding](../pictures/exercise3-Tooltip.png "Adding April and Scarves")
+
 **Set Map sizes**
 
 Here simply we generate the width and height that we will use for the SVG element. We will see it later.
@@ -238,6 +241,7 @@ var select = d3.select("#yearSelection")
     .attr('class','select comboStyle')
     .on('change', updateMap);
 ```
+![No padding](../pictures/exercise3-Combobox.png "Adding April and Scarves")
 
 **Button to start the animation**
 
@@ -250,6 +254,7 @@ var button = d3.select("#animationButton")
     .attr("value", TEXT_ANIMATION)
     .attr("onclick", "runAnimation()"); 
 ```
+![No padding](../pictures/exercise3-Button.png "Adding April and Scarves")
 
 **Text indicating the current selected year**
 
@@ -260,6 +265,7 @@ var animationyear = d3.select("#AnimationText")
     .append("text")
     .attr("class", "yearStyle");
 ```
+![No padding](../pictures/exercise3-Year.png "Adding April and Scarves")
 
 **Map**
 
@@ -397,6 +403,7 @@ function showCountryHoverAndTip(d) {
       .style("stroke-width", 2);
 }
 ```
+![No padding](../pictures/exercise3-HoverOn.png "Adding April and Scarves")
 - **hideCountryHoverAndTip**: in the mouse out we do the opposite. Simply we hide the tooltip and return to the original opacity and stroke values.
 ```
 function hideCountryHoverAndTip(d) {
@@ -408,6 +415,7 @@ function hideCountryHoverAndTip(d) {
       .style("stroke-width", 0.5);
 }
 ```
+![No padding](../pictures/exercise3-HoverOff.png "Adding April and Scarves")
 
 To end with the code, we have to comment the functions executed when a year is selected int he combobox and when we press the Animation button.
 

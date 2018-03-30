@@ -129,7 +129,7 @@ function addCountriesToMap() {
 
 // Show Hover and Tip
 function showCountryHoverAndTip(d) {
-  tip.show(d);
+  //tip.show(d);
 
   d3.select(this)
       .style("opacity", 1)
