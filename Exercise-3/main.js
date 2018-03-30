@@ -2,6 +2,7 @@ var format = d3.format(",");
 let data;
 let populationById = {};
 let startYear, endYear;
+let countrydata;
 
 // Set tooltips
 var tip = d3.tip()
@@ -25,29 +26,29 @@ var color = d3.scaleThreshold()
     .domain(POPULATION_RANGES)
     .range(POPULATION_RANGES_COLOR);
 
-// Combo Box
+// Combo Box to select year
 d3.select("#yearSelection")
-    .append("text")
-    .attr("class", "yearStyle")
-    .text(TEXT);
+.append("text")
+.attr("class", "yearStyle")
+.text(TEXT);
 
 var select = d3.select("#yearSelection")
-    .append('select')
-    .attr('class','select comboStyle')
-    .on('change', updateMap);
+.append('select')
+.attr('class','select comboStyle')
+.on('change', updateMap);
 
-// Button
+// Button to start the animation
 var button = d3.select("#animationButton")
-    .append("input")
-    .attr("type", "button")
-    .attr("name", "toggle")
-    .attr("value", TEXT_ANIMATION)
-    .attr("onclick", "runAnimation()"); 
+.append("input")
+.attr("type", "button")
+.attr("name", "toggle")
+.attr("value", TEXT_ANIMATION)
+.attr("onclick", "runAnimation()"); 
 
 var animationyear = d3.select("#AnimationText")
-    .append("text")
-    .attr("class", "yearStyle")
-    .text("1960");
+.append("text")
+.attr("class", "yearStyle")
+.text("1960");
 
 // Map
 var svg = d3.select("#RowBottom")
@@ -73,11 +74,13 @@ svg.call(tip);
 // World_countries extracted from: https://raw.githubusercontent.com/jdamiani27/Data-Visualization-and-D3/master/lesson4/world_countries.json
 queue()
     .defer(d3.json, "world_countries.json")
+    .defer(d3.json, "country-data.json")
     .await(createMap);
 
 // After Load world_countries file, we create the Map
-function createMap(error, countriesData) {
+function createMap(error, countriesData, countriesPopulation) {
     data = countriesData;
+    countrydata = countriesPopulation;
 
     // List of years to feed the Combo Box
     var years = [];
