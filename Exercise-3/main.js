@@ -96,16 +96,7 @@ function createMap(error, countriesData, countriesPopulation) {
     animationyear.text(startYear)
   
     // Adding countries information to the Map
-    svg.append("g")
-        .attr("class", "countries")
-        .selectAll("path")
-        .data(countries.features)
-        .enter().append("path")
-        .attr("d", path)
-        .style("fill", function (d) { return color(populationById[d.id]); })
-        .attr("class", "countriesStyle")
-        .on('mouseover', showCountryHoverAndTip)
-        .on('mouseout', hideCountryHoverAndTip);
+    addCountriesToMap();
 }
 
 // Feed Combo box with the years
@@ -120,6 +111,20 @@ function fillComboYear() {
       .data(years).enter()
       .append('option')
       .text(function (d) { return d; });
+}
+
+//Add countries to the map
+function addCountriesToMap() {
+  svg.append("g")
+        .attr("class", "countries")
+        .selectAll("path")
+        .data(countries.features)
+        .enter().append("path")
+        .attr("d", path)
+        .style("fill", function (d) { return color(populationById[d.id]); })
+        .attr("class", "countriesStyle")
+        .on('mouseover', showCountryHoverAndTip)
+        .on('mouseout', hideCountryHoverAndTip);
 }
 
 // Show Hover and Tip
@@ -144,7 +149,6 @@ function hideCountryHoverAndTip(d) {
 
 // Set current year population information to the map
 function setYearOnMap(year) {
-  // In the first load, we will obtain the data for the startYear
   populationById = {};
   // Get Data (Country code and population) needed for the year filtered
   var yearData = population
