@@ -1,10 +1,10 @@
-var format = d3.format(",");
-let data;
+let countries;
+let population;
 let populationById = {};
 let startYear, endYear;
-let countrydata;
 
 // Set tooltips
+var format = d3.format(",");
 var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([150, 100])
@@ -17,6 +17,7 @@ var tip = d3.tip()
            "</span>";
     })
 
+// Set Map sizes
 var margin = { top: 0, right: 0, bottom: 0, left: 0 };
 var width = SVG_WIDTH - margin.left - margin.right;
 var height = SVG_HEIGHT - margin.top - margin.bottom;
@@ -26,29 +27,29 @@ var color = d3.scaleThreshold()
     .domain(POPULATION_RANGES)
     .range(POPULATION_RANGES_COLOR);
 
-// Combo Box to select year
+// Text and Combo Box to select year
 d3.select("#yearSelection")
-.append("text")
-.attr("class", "yearStyle")
-.text(TEXT);
+    .append("text")
+    .attr("class", "yearStyle")
+    .text(TEXT);
 
 var select = d3.select("#yearSelection")
-.append('select')
-.attr('class','select comboStyle')
-.on('change', updateMap);
+    .append('select')
+    .attr('class','select comboStyle')
+    .on('change', updateMap);
 
 // Button to start the animation
 var button = d3.select("#animationButton")
-.append("input")
-.attr("type", "button")
-.attr("name", "toggle")
-.attr("value", TEXT_ANIMATION)
-.attr("onclick", "runAnimation()"); 
+    .append("input")
+    .attr("type", "button")
+    .attr("name", "toggle")
+    .attr("value", TEXT_ANIMATION)
+    .attr("onclick", "runAnimation()"); 
 
+// Text indicating the current selected year
 var animationyear = d3.select("#AnimationText")
-.append("text")
-.attr("class", "yearStyle")
-.text("1960");
+    .append("text")
+    .attr("class", "yearStyle");
 
 // Map
 var svg = d3.select("#RowBottom")
@@ -65,6 +66,7 @@ var projection = d3.geoMercator()
     .scale(130)
     .translate([width / 2, height / 1.5]);
 
+// To create the paths that represent the country borders
 var path = d3.geoPath()
     .projection(projection);
 
@@ -77,43 +79,27 @@ queue()
     .defer(d3.json, "country-data.json")
     .await(createMap);
 
-// After Load world_countries file, we create the Map
+// After Load world_countries and country-data files, we create the Map
 function createMap(error, countriesData, countriesPopulation) {
-    data = countriesData;
-    countrydata = countriesPopulation;
+    countries = countriesData;
+    population = countriesPopulation;
 
-    // List of years to feed the Combo Box
-    var years = [];
-    startYear = countrydata.reduce((first, row) => Math.min(first, row.Year), MAX_YEAR);
-    endYear = countrydata.reduce((last, row) => Math.max(last, row.Year), MIN_YEAR);
+    // Get the first and last year with population data    
+    startYear = population.reduce((first, row) => Math.min(first, row.Year), MAX_YEAR);
+    endYear = population.reduce((last, row) => Math.max(last, row.Year), MIN_YEAR);
   
-    for(var i = startYear; i <= endYear; i++){
-        years.push(i);
-    }
+    // Fill the combo box with all the years with population data
+    fillComboYear();
 
-    // Feed Combo box with the years
-    var options = select
-        .selectAll('option')
-        .data(years).enter()
-        .append('option')
-        .text(function (d) { return d; });
-
-    // In the first load, we will obtain the data for the startYear
-    populationById = {};
-    // Get Data (Country code and population) needed for the year filtered
-    var yearData = countrydata
-        .filter(data => data.Year === startYear)
-        .map(data => ({id: data["Country Code"], population: data.Value}))
-    // Prepare a map with the population (value) by id (Key)
-    yearData.forEach(function (d) { populationById[d.id] = +d.population; });
-    // Add to the Countries data the selected year and the population for that year
-    data.features.forEach(function (d) { d.population = populationById[d.id], d.year = startYear });
-    
+    // Set data for the first year
+    setYearOnMap(startYear);
+    animationyear.text(startYear)
+  
     // Adding countries information to the Map
     svg.append("g")
         .attr("class", "countries")
         .selectAll("path")
-        .data(data.features)
+        .data(countries.features)
         .enter().append("path")
         .attr("d", path)
         .style("fill", function (d) { return color(populationById[d.id]); })
@@ -122,6 +108,21 @@ function createMap(error, countriesData, countriesPopulation) {
         .on('mouseout', hideCountryHoverAndTip);
 }
 
+// Feed Combo box with the years
+function fillComboYear() {
+  var years = [];
+  for(var i = startYear; i <= endYear; i++){
+      years.push(i);
+  }
+
+  select
+      .selectAll('option')
+      .data(years).enter()
+      .append('option')
+      .text(function (d) { return d; });
+}
+
+// Show Hover and Tip
 function showCountryHoverAndTip(d) {
   tip.show(d);
 
@@ -131,6 +132,7 @@ function showCountryHoverAndTip(d) {
       .style("stroke-width", 2);
 }
 
+// Hide Hover and Tip
 function hideCountryHoverAndTip(d) {
   tip.hide(d);
 
@@ -140,15 +142,24 @@ function hideCountryHoverAndTip(d) {
       .style("stroke-width", 0.5);
 }
 
-// Function to refresh the Map using a specific year
-function RefreshMap(year) {
-  // Prepare data for the year selected
+// Set current year population information to the map
+function setYearOnMap(year) {
+  // In the first load, we will obtain the data for the startYear
   populationById = {};
-  var yearData = countrydata
+  // Get Data (Country code and population) needed for the year filtered
+  var yearData = population
       .filter(data => data.Year === year)
       .map(data => ({id: data["Country Code"], population: data.Value}))
+  // Prepare a map with the population (value) by id (Key)
   yearData.forEach(function (d) { populationById[d.id] = +d.population; });
-  data.features.forEach(function (d) { d.population = populationById[d.id], d.year = year });
+  // Add to the Countries data the selected year and the population for that year
+  countries.features.forEach(function (d) { d.population = populationById[d.id], d.year = year });
+}
+
+// Function to refresh the Map using a specific year
+function RefreshMap(year) {
+  // Set data for the year selected
+  setYearOnMap(year);
 
   // Refresh the countries using the data for the new year selected
   var refresh = d3.select("body").transition();
